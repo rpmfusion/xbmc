@@ -1,6 +1,6 @@
 Name: xbmc
 Version: 9.11
-Release: 16%{?dist}
+Release: 18%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{version}-patched.tar.xz
@@ -69,9 +69,10 @@ Patch25: xbmc-9.11-xext.diff
 # an attempt to force hdhomerun to be external
 Patch26: xbmc-9.11-hdhomerun.patch
 
+ExcludeArch: ppc64
 Buildroot: %{_tmppath}/%{name}-%{version}
 Summary: Media center
-License: GPLv2+
+License: GPLv2+ and GPLv3+
 Group: Applications/Multimedia
 BuildRequires: desktop-file-utils
 BuildRequires: SDL-devel
@@ -236,6 +237,12 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pixmaps/xbmc.png
 
 %changelog
+* Fri Mar 26 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-18
+- Exclude ppc64 (not available for F-13+ in any case)
+
+* Fri Mar 26 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-17
+- Fixed license tag to include GPLv3+
+
 * Wed Mar 24 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-16
 - Add BuildRequires: hdhomerun-devel
 
