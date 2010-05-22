@@ -1,6 +1,6 @@
 Name: xbmc
 Version: 9.11
-Release: 18%{?dist}
+Release: 19%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{version}-patched.tar.xz
@@ -139,7 +139,10 @@ BuildRequires: libdca-devel
 BuildRequires: libass-devel >= 0.9.7
 BuildRequires: hdhomerun-devel
 # add following BR in next release of XBMC to get support for crystalhd devices
-#BuildRequires: libcrystalhd-devel
+BuildRequires: libcrystalhd-devel
+BuildRequires: libmodplug-devel
+BuildRequires: libmicrohttpd-devel
+BuildRequires: expat-devel
 
 %description
 XBMC media center is a free cross-platform media-player jukebox and
@@ -237,6 +240,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pixmaps/xbmc.png
 
 %changelog
+* Fri May 21 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-19
+- Add new BR for libmodplug-devel, expat-devel, libmicrohttpd-devel
+  in preparation for 10.x
+
 * Fri Mar 26 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-18
 - Exclude ppc64 (not available for F-13+ in any case)
 
