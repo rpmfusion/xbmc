@@ -1,9 +1,12 @@
+%global SVNVERSION 32266
+%global DIRVERSION %{version}-%{SVNVERSION}
+
 Name: xbmc
-Version: 9.11
-Release: 19%{?dist}
+Version: 10.5
+Release: 0.5.20100728svn%{SVNVERSION}%{?dist}
 URL: http://www.xbmc.org/
 
-Source0: %{name}-%{version}-patched.tar.xz
+Source0: %{name}-%{DIRVERSION}-patched.tar.xz
 # xbmc contains code that we cannot ship, as well as redundant private
 # copies of upstream libraries that we already distribute.  Therefore
 # we use this script to remove the code before shipping it.
@@ -14,60 +17,31 @@ Source0: %{name}-%{version}-patched.tar.xz
 # where <version> is the particular version being used
 Source1: xbmc-generate-tarball-xz.sh
 
-# look for libdca, rather than libdts
-# http://xbmc.org/trac/ticket/8040
-Patch1:	xbmc-9.11-libdca.patch
+# new patches for bootstrap
+# no trac ticket filed as yet
+Patch1: xbmc-10-bootstrap.patch
 
-# Needs work before being submitted upstream
-Patch2:	xbmc-9.11-b1-dvdlibs-external.patch
+# filed ticket, but patch still needs work
+# http://trac.xbmc.org/ticket/9658
+Patch2: xbmc-10-dvdread.patch
 
-# http://xbmc.org/trac/ticket/8026 (this will be in next release)
-Patch3:	xbmc-9.11-use_cdio_system_headers_on_non_win32.patch 
+# and new problem with zlib in cximage
+# trac ticket filed: http://trac.xbmc.org/ticket/9659
+# but patch not attached because it needs work
+Patch3: xbmc-10-disable-zlib-in-cximage.patch
 
-# Next 3 patches to use %{_libdir}
-# http://xbmc.org/trac/ticket/8590
-Patch4:	xbmc-9.11-fix-Makefile.in.patch
-Patch5: xbmc-9.11-Makefile.include.in.diff
-Patch6: xbmc-9.11-xbmc.sh.diff
+# grrr, why if an external library is detected does it require that the
+# directory exist in the tarball?
+# need to file trac ticket
+Patch4: xbmc-10-remove-libmodplug-libmicrohttpd.patch
 
-# Next 2 patches submitted upstream
-# http://www.xbmc.org/trac/ticket/8629
-Patch7: xbmc-9.11-spyce.diff
-Patch8: xbmc-9.11-RandomNumberGenerators.hpp.diff
+# need to file trac ticket, this patch just forces external hdhomerun
+# functionality, needs to be able fallback internal version
+Patch5: xbmc-10-hdhomerun.patch
 
-# Needs work before being submitted upstream
-Patch9: xbmc-9.11-remlibass.patch
-
-# Fixes GCC warning: partial backport to 9.11
-# (should be fixed in next release)
-Patch10: xbmc-9.11-changeset-26191.diff
-
-# remove goahead completely from compilation, it's been replaced
-# by libmicrohttpd in SVN, so should add that BuildRequires for 10.5
-# and drop this patch
-Patch11: xbmc-9.11-remove-goahead.patch
-
-# Next 12 patches submitted upstream:
-# http://www.xbmc.org/trac/ticket/8629
-Patch12: xbmc-9.11-external-zlib.diff
-Patch13: xbmc-9.11-goom-missing.diff
-Patch14: xbmc-9.11-rsxs-0.9.diff
-Patch15: xbmc-9.11-Weather.diff
-Patch16: xbmc-9.11-XBMCProjectM-cmake.diff
-Patch17: xbmc-9.11-cflags.patch
-Patch18: xbmc-9.11-configure.patch
-Patch19: xbmc-9.11-gymcodec.patch
-Patch20: xbmc-9.11-macdll.patch
-Patch21: xbmc-9.11-maclib.patch
-Patch22: xbmc-9.11-libid3tag.patch
-Patch23: xbmc-9.11-librtv.patch
-
-# these next 2 are (hopefully temporary) hacks
-Patch24: xbmc-9.11-swscale.diff
-Patch25: xbmc-9.11-xext.diff
-
-# an attempt to force hdhomerun to be external
-Patch26: xbmc-9.11-hdhomerun.patch
+# fix "@#" in Makefile which seem to screw things up no trac filed
+# yet, don't know why this isn't a problem on other Linux systems
+Patch6: xbmc-10-Makefile.patch
 
 ExcludeArch: ppc64
 Buildroot: %{_tmppath}/%{name}-%{version}
@@ -138,11 +112,11 @@ BuildRequires: pulseaudio-libs-devel
 BuildRequires: libdca-devel
 BuildRequires: libass-devel >= 0.9.7
 BuildRequires: hdhomerun-devel
-# add following BR in next release of XBMC to get support for crystalhd devices
 BuildRequires: libcrystalhd-devel
 BuildRequires: libmodplug-devel
 BuildRequires: libmicrohttpd-devel
 BuildRequires: expat-devel
+BuildRequires: gettext-devel
 
 %description
 XBMC media center is a free cross-platform media-player jukebox and
@@ -152,34 +126,14 @@ forecast functions, together third-party plugins.
 
 %prep
 
-%setup -q -n %{name}-%{version}
+%setup -q -n %{name}-%{DIRVERSION}
 
-%patch1 -p1 -b .dtsdca
-%patch2 -p1 -b .dvdlibs
-%patch3 -p1 -b .cdio
-%patch4 -p0 -b .makefilein
-%patch5 -p1 -b .makefileincl
-%patch6 -p1 -b .xbmcsh
-%patch7 -p1
-%patch8 -p1 -b .rand
-%patch9 -p1 -b .remlibass
-%patch10 -p1 -b .gccwarning
-%patch11 -p0 -b .removegoahead
-%patch12 -p1 -b .zlib
-%patch13 -p1 -b .goom
-%patch14 -p1 -b .rsxs
-%patch15 -p1 -b .weather
-%patch16 -p1 -b .projectm
-%patch17 -p1 -b .cflags
-%patch18 -p1
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch26 -p1 -b .hdhomerun
+%patch1 -p0
+%patch2 -p0
+%patch3 -p0
+%patch4 -p0
+%patch5 -p1
+%patch6 -p0
 
 # Prevent rerunning the autotools.
 touch -r xbmc/screensavers/rsxs-0.9/aclocal.m4 \
@@ -194,10 +148,12 @@ chmod +x bootstrap
 ./configure \
 --prefix=%{_prefix} --bindir=%{_bindir} --includedir=%{_includedir} \
 --libdir=%{_libdir} --datadir=%{_datadir} \
---enable-external-libraries --enable-goom \
+--enable-goom \
+--enable-external-ffmpeg --enable-external-python \
+--disable-libdts --disable-liba52 \
+--disable-dvdcss \
 --disable-optimizations --disable-debug \
---disable-webserver \
-SVN_REV=26017 \
+SVN_REV=%{SVNVERSION} \
 CPPFLAGS="-I/usr/include/ffmpeg" \
 CFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/ffmpeg" \
 CXXFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/ffmpeg" \
@@ -205,22 +161,18 @@ LDFLAGS="-fPIC" \
 LIBS="-L%{_libdir}/mysql -lhdhomerun $LIBS" \
 ASFLAGS=-fPIC
 
+# disable the following:
+# --enable-external-libraries
+# enumerate all the external libraries because the libdts/liba52 detection 
+# is broken upstream: http://trac.xbmc.org/ticket/9277
+
 make %{?_smp_mflags} VERBOSE=1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
-# remove the doc files from libdir, they should be put in the docdir
-rm $RPM_BUILD_ROOT/%{_libdir}/xbmc/copying.txt $RPM_BUILD_ROOT/%{_libdir}/xbmc/keymapping.txt $RPM_BUILD_ROOT/%{_libdir}/xbmc/LICENSE.GPL $RPM_BUILD_ROOT/%{_libdir}/xbmc/README.linux
-# remove bogus header file 
-rm -f $RPM_BUILD_ROOT%{_libdir}/xbmc/visualisations/xbmc_vis.h
-
-# make Python files executable to keep rpmlint quiet
-# (spyce to be dropped from next xbmc release, so this can be dropped then)
-for i in run_spyceCGI.py run_spyceCmd.py run_spyceModpy.py spyceCGI.py spyceCmd.py spyce.py verchk.py
-do
-  chmod +x $RPM_BUILD_ROOT%{_libdir}/xbmc/system/python/spyce/$i
-done
+# remove the doc files from unversioned /usr/share/doc/xbmc, they should be in versioned docdir
+rm -r $RPM_BUILD_ROOT/%{_datadir}/doc/
 
 desktop-file-install \
  --dir=${RPM_BUILD_ROOT}%{_datadir}/applications \
@@ -235,11 +187,33 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/xbmc
 %{_bindir}/xbmc-standalone
 %{_libdir}/xbmc
+%{_datadir}/xbmc
 %{_datadir}/xsessions/XBMC.desktop
 %{_datadir}/applications/xbmc.desktop
-%{_datadir}/pixmaps/xbmc.png
+%{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
+* Thu Jul 29 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.5-0.5.20100728svn32266%
+- Add gettext-devel to BuildRequires for autopoint
+
+* Wed Jul 28 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.5-0.4.20100728svn32266
+- Sync with latest Dharma branch (r32266)
+
+* Mon Jul 19 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.5-0.3.20100719svn31991
+- Remove 24 patches which have been applied upstream, yay!
+- Rebased 2 patches: libdvd patch and hdhomerun patch for Dharma
+- Add some new patches, some of which have upstream trac tickets,
+  others need to
+- Renumber patches
+
+* Mon Jul 19 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.5-0.2.20100719svn31991
+- Sync with Dharma branch
+
+* Mon Jul 19 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.5-0.1.20100719svn31977
+- Major overhaul for 10.x version of XBMC
+- Fix file section for better FHS-compliance
+- Drop a lot of patches that have been upstreamed, and rebase others
+
 * Fri May 21 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-19
 - Add new BR for libmodplug-devel, expat-devel, libmicrohttpd-devel
   in preparation for 10.x
