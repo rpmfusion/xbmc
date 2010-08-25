@@ -1,6 +1,6 @@
 Name: xbmc
 Version: 9.11
-Release: 18%{?dist}
+Release: 19%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{version}-patched.tar.xz
@@ -191,6 +191,7 @@ chmod +x bootstrap
 ./configure \
 --prefix=%{_prefix} --bindir=%{_bindir} --includedir=%{_includedir} \
 --libdir=%{_libdir} --datadir=%{_datadir} \
+--with-lirc-device=/var/run/lirc/lircd \
 --enable-external-libraries --enable-goom \
 --disable-optimizations --disable-debug \
 --disable-webserver \
@@ -237,6 +238,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pixmaps/xbmc.png
 
 %changelog
+* Wed Aug 25 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-19
+- Default to using /var/run/lirc/lircd (#1325)
+
 * Fri Mar 26 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-18
 - Exclude ppc64 (not available for F-13+ in any case)
 
