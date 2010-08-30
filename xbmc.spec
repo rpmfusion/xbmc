@@ -1,6 +1,6 @@
 Name: xbmc
 Version: 9.11
-Release: 19%{?dist}
+Release: 20%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{version}-patched.tar.xz
@@ -68,6 +68,9 @@ Patch25: xbmc-9.11-xext.diff
 
 # an attempt to force hdhomerun to be external
 Patch26: xbmc-9.11-hdhomerun.patch
+
+# search for Python 2.7 as well
+Patch27: xbmc-9.11-python2.7.patch
 
 ExcludeArch: ppc64
 Buildroot: %{_tmppath}/%{name}-%{version}
@@ -177,6 +180,7 @@ forecast functions, together third-party plugins.
 %patch24 -p1
 %patch25 -p1
 %patch26 -p1 -b .hdhomerun
+%patch27 -p0
 
 # Prevent rerunning the autotools.
 touch -r xbmc/screensavers/rsxs-0.9/aclocal.m4 \
@@ -197,8 +201,8 @@ chmod +x bootstrap
 --disable-webserver \
 SVN_REV=26017 \
 CPPFLAGS="-I/usr/include/ffmpeg" \
-CFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/ffmpeg" \
-CXXFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/ffmpeg" \
+CFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/ffmpeg -D__STDC_CONSTANT_MACROS" \
+CXXFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/ffmpeg -D__STDC_CONSTANT_MACROS" \
 LDFLAGS="-fPIC" \
 LIBS="-L%{_libdir}/mysql -lhdhomerun $LIBS" \
 ASFLAGS=-fPIC
@@ -238,6 +242,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pixmaps/xbmc.png
 
 %changelog
+* Sun Aug 29 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-20
+- Add -D__STDC_CONSTANT_MACROS for building with ffmpeg > 0.6
+  as per: http://forum.xbmc.org/showthread.php?t=75800
+- Add patch for Python 2.7
+
 * Wed Aug 25 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-19
 - Default to using /var/run/lirc/lircd (#1325)
 
