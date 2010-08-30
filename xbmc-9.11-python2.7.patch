@@ -495,6 +495,36 @@ Index: xbmc/lib/libPython/xbmcmodule/pyutil.h
      #include <python2.6/Python.h>
    #elif (defined HAVE_LIBPYTHON2_5)
      #include <python2.5/Python.h>
+Index: xbmc/lib/libPython/xbmcmodule/language.h
+===================================================================
+--- xbmc/lib/libPython/xbmcmodule/language.h.orig	2010-08-30 02:53:36.545418596 -0400
++++ xbmc/lib/libPython/xbmcmodule/language.h	2010-08-30 02:54:07.381668564 -0400
+@@ -25,7 +25,9 @@
+   #include "config.h"
+ #endif
+ #if (defined USE_EXTERNAL_PYTHON)
+-  #if (defined HAVE_LIBPYTHON2_6)
++  #if (defined HAVE_LIBPYTHON2_7)
++    #include <python2.7/Python.h>
++  #elif (defined HAVE_LIBPYTHON2_6)
+     #include <python2.6/Python.h>
+   #elif (defined HAVE_LIBPYTHON2_5)
+     #include <python2.5/Python.h>
+Index: xbmc/lib/libPython/xbmcmodule/PythonSettings.h
+===================================================================
+--- xbmc/lib/libPython/xbmcmodule/PythonSettings.h.orig	2010-08-30 03:02:55.131669137 -0400
++++ xbmc/lib/libPython/xbmcmodule/PythonSettings.h	2010-08-30 03:03:18.218294899 -0400
+@@ -25,7 +25,9 @@
+   #include "config.h"
+ #endif
+ #if (defined USE_EXTERNAL_PYTHON)
+-  #if (defined HAVE_LIBPYTHON2_6)
++  #if (defined HAVE_LIBPYTHON2_7)
++    #include <python2.7/Python.h>
++  #elif (defined HAVE_LIBPYTHON2_6)
+     #include <python2.6/Python.h>
+   #elif (defined HAVE_LIBPYTHON2_5)
+     #include <python2.5/Python.h>
 Index: xbmc/lib/libPython/XBPyThread.h
 ===================================================================
 --- xbmc/lib/libPython/XBPyThread.h	(revision 32022)

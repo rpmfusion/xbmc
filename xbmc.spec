@@ -1,6 +1,6 @@
 Name: xbmc
 Version: 9.11
-Release: 20%{?dist}
+Release: 21%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{version}-patched.tar.xz
@@ -242,6 +242,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/pixmaps/xbmc.png
 
 %changelog
+* Mon Aug 30 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-21
+- Fix python 2.7 patch
+
 * Sun Aug 29 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 9.11-20
 - Add -D__STDC_CONSTANT_MACROS for building with ffmpeg > 0.6
   as per: http://forum.xbmc.org/showthread.php?t=75800
