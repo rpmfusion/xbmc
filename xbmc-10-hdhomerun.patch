@@ -1,14 +1,14 @@
---- xbmc-9.11/Makefile.in.orig	2010-03-06 13:36:20.065364213 +0100
-+++ xbmc-9.11/Makefile.in	2010-03-06 13:36:50.136366154 +0100
-@@ -82,7 +82,6 @@
+--- xbmc-10/Makefile.in.orig	2010-07-19 02:04:32.002268864 -0400
++++ xbmc-10/Makefile.in	2010-07-19 02:06:30.185143439 -0400
+@@ -94,7 +94,6 @@
  LIB_DIRS=\
  	xbmc/lib/cximage-6.0 \
  	xbmc/lib/libexif \
 -	xbmc/lib/libhdhomerun \
  	xbmc/lib/libid3tag \
- 	xbmc/lib/libPython/linux
- 
-@@ -273,8 +272,6 @@
+ 	xbmc/lib/libapetag \
+ 	xbmc/lib/libPython/linux \
+@@ -340,8 +339,6 @@
  endif
  libexif: dllloader
  	$(MAKE) -C xbmc/lib/libexif
@@ -17,17 +17,20 @@
  libid3tag: dllloader
  	$(MAKE) -C xbmc/lib/libid3tag
  papcodecs: dllloader dvdpcodecs
-@@ -304,7 +301,7 @@
- 	$(MAKE) -C xbmc/lib/cximage-6.0
+@@ -371,9 +368,9 @@
  
  codecs: papcodecs dvdpcodecs
--libs: libhdhomerun libid3tag imagelib libexif python
-+libs: libid3tag imagelib libexif python
+ ifeq ($(findstring osx,$(ARCH)), osx)
+-libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so system/players/paplayer/libmodplug-$(ARCH).so
++libs: libid3tag imagelib libexif python system/libcpluff-$(ARCH).so system/players/paplayer/libmodplug-$(ARCH).so
+ else
+-libs: libhdhomerun libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
++libs: libid3tag imagelib libexif python system/libcpluff-$(ARCH).so
+ endif
  externals: codecs libs python visualizations screensavers
  
- xcode_depends: \
---- xbmc-9.11/xbmc/FileSystem/HDHomeRun.h.orig	2010-03-06 13:51:33.326488131 +0100
-+++ xbmc-9.11/xbmc/FileSystem/HDHomeRun.h	2010-03-06 13:51:53.899488929 +0100
+--- xbmc-10/xbmc/FileSystem/HDHomeRun.h.orig	2010-01-31 20:58:58.000000000 -0500
++++ xbmc-10/xbmc/FileSystem/HDHomeRun.h	2010-07-19 02:17:38.913394783 -0400
 @@ -22,7 +22,7 @@
  
  #include "IDirectory.h"
@@ -119,14 +122,15 @@
 +  virtual void Unload() {}
  };
  
- namespace DIRECTORY
---- xbmc-9.11/configure.in.orig	2010-03-06 13:44:45.670365692 +0100
-+++ xbmc-9.11/configure.in	2010-03-06 13:44:57.298492458 +0100
-@@ -989,7 +989,6 @@
-              xbmc/lib/libRTV/Makefile \
-              xbmc/lib/libexif/Makefile \
-              xbmc/lib/libXDAAP/Makefile \
--             xbmc/lib/libhdhomerun/Makefile \
-              xbmc/lib/libshout/Makefile \
-              xbmc/lib/libsquish/Makefile \
-              xbmc/lib/libid3tag/Makefile \
+ namespace XFILE
+
+--- xbmc-10/configure.in.orig	2010-07-19 02:11:59.114393341 -0400
++++ xbmc-10/configure.in	2010-07-19 02:12:07.951143138 -0400
+@@ -1348,7 +1348,6 @@
+     xbmc/lib/libRTV/Makefile \
+     xbmc/lib/libexif/Makefile \
+     xbmc/lib/libXDAAP/Makefile \
+-    xbmc/lib/libhdhomerun/Makefile \
+     xbmc/lib/libhttpapi/Makefile \
+     lib/jsoncpp/jsoncpp/src/lib_json/Makefile \
+     xbmc/lib/libjsonrpc/Makefile \
