@@ -6,7 +6,7 @@
 
 Name: xbmc
 Version: 10.0
-Release: 0.17.%{PRERELEASE}%{?dist}
+Release: 0.18.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -217,6 +217,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
+* Thu Oct 14 2010 Nicolas Chauvet <kwizart@gmail.com> - 10.0-0.18.Dharma_beta2
+- Rebuilt for gcc bug
+
 * Sat Sep 18 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.0-0.17.Dharma_beta2
 - Enable librtmp support on in F-14 and later (until librtmp is build on F-13)
 
