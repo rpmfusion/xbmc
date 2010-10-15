@@ -1,12 +1,12 @@
-%global SVNVERSION 33778
-%global PRERELEASE Dharma_beta2
+%global SVNVERSION 34731
+%global PRERELEASE Dharma_beta3
 # use below for SVN snapshot
 #global DIRVERSION %{version}-%{SVNVERSION}
 %global DIRVERSION %{PRERELEASE}
 
 Name: xbmc
 Version: 10.0
-Release: 0.18.%{PRERELEASE}%{?dist}
+Release: 0.19.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -132,7 +132,8 @@ BuildRequires: zip
 %if 0%{?fedora} >= 14
 BuildRequires: librtmp-devel
 %endif
-BuildRequires: libva-freeworld-devel
+# VAAPI currently not working, comment-out
+#BuildRequires: libva-freeworld-devel
 
 # need explicit requires for libcrystalhd functionality
 # as it is dynamically loaded
@@ -217,6 +218,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
+* Thu Oct 14 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.0-0.19.Dharma_beta3
+- Rebase to Dharma beta3 (SVN r34731)
+- Disable VAAPI: crashes XBMC when playing back rtmp streams
+
 * Thu Oct 14 2010 Nicolas Chauvet <kwizart@gmail.com> - 10.0-0.18.Dharma_beta2
 - Rebuilt for gcc bug
 
