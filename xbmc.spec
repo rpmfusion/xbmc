@@ -8,7 +8,7 @@
 
 Name: xbmc
 Version: 10.0
-Release: 1%{?dist}.2
+Release: 1%{?dist}.3
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -214,7 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
-* Thu Feb 10 2011 Nicolas Chauvet <kwizart@gmail.com> - 10.0-1.2
+* Thu Feb 10 2011 Nicolas Chauvet <kwizart@gmail.com> - 10.0-1.3
 - Rebuild for libmicrohttpd ABI bump
 
 * Thu Dec 23 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.0-1
