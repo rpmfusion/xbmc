@@ -8,7 +8,7 @@
 
 Name: xbmc
 Version: 10.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -214,6 +214,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
+* Sun Mar 27 2011 Nicolas Chauvet <kwizart@gmail.com> - 10.0-2
+- Rebuild for libmysqlclient
+
 * Thu Dec 23 2010 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.0-1
 - Update to 10.0 (Dharma final)
 
