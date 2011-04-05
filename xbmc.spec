@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 10.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -230,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
+* Tue Apr 05 2011 Nicolas Chauvet <kwizart@gmail.com> - 10.1-3
+- Rebuilt for libmysqlclient bump (was built with previous version).
+
 * Wed Mar 30 2011 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.1-2
 - Patch from upstream to fix builds for GCC 4.6.x, slightly modified
   to handle previous patches for Makefile.in
