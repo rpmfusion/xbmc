@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 10.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -230,6 +230,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
+* Mon Sep 26 2011 Nicolas Chauvet <kwizart@gmail.com> - 10.1-5
+- Rebuilt for FFmpeg-0.8
+
 * Fri Sep  2 2011 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.1-4
 - Remove hal-devel as BuildRequires, dropped in f16 and later:
   http://fedoraproject.org/wiki/Features/HalRemoval
