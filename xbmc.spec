@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 10.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -234,6 +234,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
+* Wed Nov 23 2011 Nicolas Chauvet <kwizart@gmail.com> - 10.1-7
+- Rebuilt for libcdio
+
 * Sat Nov  5 2011 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.1-6
 - Disable using external ffmpeg for the moment, until such time as
   either we backport a fix for 0.8 ffmpeg or we build XBMC Eden (11.x)
