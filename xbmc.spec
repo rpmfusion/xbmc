@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 10.1
-Release: 8%{?dist}
+Release: 9%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -57,6 +57,8 @@ Patch8: xbmc-support_newer_libbluray.patch
 # libpng 1.5 patch from gentoo
 # http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/media-tv/xbmc/files/xbmc-10.1-libpng-1.5.patch
 Patch9: xbmc-10.1-libpng-1.5.patch
+
+Patch10: xbmc-10.1-Dharma-335-Python_parse_had_wrong_native_type-0.1.patch
 
 ExcludeArch: ppc64
 Buildroot: %{_tmppath}/%{name}-%{version}
@@ -175,6 +177,7 @@ forecast functions, together third-party plugins.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 # Prevent rerunning the autotools.
 touch -r xbmc/screensavers/rsxs-0.9/aclocal.m4 \
@@ -246,6 +249,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
+* Tue Dec 20 2011 Alex Lancaster <alexlan[AT] fedoraproject org> - 10.1-9
+- Add patch from OpenElec distribution to fix broken YouTube plugin
+  (should fix #1905)
+
 * Wed Dec 14 2011 Xavier Bachelot <xavier@bachelot.org> - 10.1-8
 - Add patch for newer libbluray support.
 - Add patch for libpng 1.5 support.
