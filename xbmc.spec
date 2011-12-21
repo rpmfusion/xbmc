@@ -48,6 +48,10 @@ Patch6: xbmc-10-python2.7.patch
 # (committed to git upstream: http://trac.xbmc.org/ticket/11383)
 Patch7: xbmc-Dharma-10.1-gcc-4.6-fixes-0.1.patch
 
+# fixes https://bugzilla.rpmfusion.org/show_bug.cgi?id=1905
+# patch from OpenElec distribution
+Patch9: xbmc-10.1-Dharma-335-Python_parse_had_wrong_native_type-0.1.patch
+
 ExcludeArch: ppc64
 Buildroot: %{_tmppath}/%{name}-%{version}
 Summary: Media center
@@ -163,6 +167,7 @@ forecast functions, together third-party plugins.
 %patch5 -p0
 %patch6 -p0
 %patch7 -p1
+%patch9 -p1
 
 # Prevent rerunning the autotools.
 touch -r xbmc/screensavers/rsxs-0.9/aclocal.m4 \
@@ -234,8 +239,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/icons/hicolor/*/*/*.png
 
 %changelog
-* Wed Nov 23 2011 Nicolas Chauvet <kwizart@gmail.com> - 10.1-7
-- Rebuilt for libcdio
+* Tue Dec 20 2011 Alex Lancaster <alexlan[AT] fedoraproject org> - 10.1-7
+- Add patch from OpenElec distribution to fix broken YouTube plugin
+  (should fix #1905)
 
 * Sat Nov  5 2011 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.1-6
 - Disable using external ffmpeg for the moment, until such time as
