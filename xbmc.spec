@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 11.0
-Release: 0.7.%{PRERELEASE}%{?dist}
+Release: 0.8.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -150,8 +150,6 @@ Requires: xorg-x11-utils
 # and for installation
 BuildRequires: python-imaging
 Requires: python-imaging
-BuildRequires: python-sqlite2
-Requires: python-sqlite2
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -236,8 +234,8 @@ desktop-file-install \
 # the system Python interpreter, we also want to use the system libraries
 install -d $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pil/lib
 ln -s %{python_sitearch}/PIL $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pil/lib/PIL
-install -d $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib
-ln -s %{python_sitearch}/pysqlite2 $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib/pysqlite2
+#install -d $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib
+#ln -s %{python_sitearch}/pysqlite2 $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib/pysqlite2
 
 
 %clean
@@ -271,6 +269,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Fri Mar  9 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.8.Eden_beta2
+- Drop python-sqlite2 BR (obsoleted package), should use internal sqlite3 (#2217)
+
 * Fri Mar 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 11.0-0.7.Eden_beta2
 - Rebuilt for FFmpeg/x264
 
