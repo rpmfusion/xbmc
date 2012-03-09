@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 11.0
-Release: 0.6.%{PRERELEASE}%{?dist}
+Release: 0.7.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -271,6 +271,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Fri Mar 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 11.0-0.7.Eden_beta2
+- Rebuilt for FFmpeg/x264
+
 * Sun Jan 29 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.6.Eden_beta2
 - Update to Eden beta2
 
