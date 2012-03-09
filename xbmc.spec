@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 11.0
-Release: 0.8.%{PRERELEASE}%{?dist}
+Release: 0.9.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -169,20 +169,20 @@ entertainment hub.  XBMC can play a spectrum of of multimedia formats,
 and featuring playlist, audio visualizations, slideshow, and weather
 forecast functions, together third-party plugins.
 
-%package eventclients
-Summary: Media center event client remotes
+#%%package eventclients
+#%Summary: Media center event client remotes
 
-%description eventclients
-This package contains support for using XBMC with the PS3 Remote, the Wii
-Remote, a J2ME based remote and the command line xbmc-send utility.
+#%%description eventclients
+#%This package contains support for using XBMC with the PS3 Remote, the Wii
+#%Remote, a J2ME based remote and the command line xbmc-send utility.
 
-%package eventclients-devel
-Summary: Media center event client remotes development files
-Requires:	%{name}-eventclients = %{version}-%{release}
+#%%package eventclients-devel
+#%Summary: Media center event client remotes development files
+#%Requires:	%{name}-eventclients = %{version}-%{release}
 
-%description eventclients-devel
-This package contains the development header files for the eventclients
-library.
+#%%description eventclients-devel
+#%This package contains the development header files for the eventclients
+#%library.
 
 %prep
 
@@ -222,7 +222,7 @@ make %{?_smp_mflags} VERBOSE=1
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
-make -C tools/EventClients DESTDIR=$RPM_BUILD_ROOT install 
+#make -C tools/EventClients DESTDIR=$RPM_BUILD_ROOT install 
 # remove the doc files from unversioned /usr/share/doc/xbmc, they should be in versioned docdir
 rm -r $RPM_BUILD_ROOT/%{_datadir}/doc/
 
@@ -252,23 +252,27 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/xbmc.desktop
 %{_datadir}/icons/hicolor/*/*/*.png
 
-%files eventclients
-%defattr(-,root,root)
-%python_sitelib/xbmc
-%dir %{_datadir}/pixmaps/xbmc
-%{_datadir}/pixmaps/xbmc/*.png
-%{_bindir}/xbmc-j2meremote
-%{_bindir}/xbmc-ps3d
-%{_bindir}/xbmc-ps3remote
-%{_bindir}/xbmc-send
-%{_bindir}/xbmc-wiiremote
+#%%files eventclients
+#%%defattr(-,root,root)
+#%%python_sitelib/xbmc
+#%%dir %{_datadir}/pixmaps/xbmc
+#%%{_datadir}/pixmaps/xbmc/*.png
+#%%{_bindir}/xbmc-j2meremote
+#%%{_bindir}/xbmc-ps3d
+#%%{_bindir}/xbmc-ps3remote
+#%%{_bindir}/xbmc-send
+#%%{_bindir}/xbmc-wiiremote
 
-%files eventclients-devel
-%defattr(-,root,root)
-%dir %{_includedir}/xbmc
-%{_includedir}/xbmc/xbmcclient.h
+#%%files eventclients-devel
+#%%defattr(-,root,root)
+#%%dir %{_includedir}/xbmc
+#%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Fri Mar  9 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.9.Eden_beta2
+- Temporarily drop clientevents package (currently fails to build) to
+  fix overall FTBFS.
+
 * Fri Mar  9 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.8.Eden_beta2
 - Drop python-sqlite2 BR (obsoleted package), should use internal sqlite3 (#2217)
 
