@@ -1,11 +1,11 @@
-%global PRERELEASE Eden_beta2
+%global PRERELEASE Eden_rc2
 #global DIRVERSION %{version}
 # use below for pre-release
 %global DIRVERSION %{version}-%{PRERELEASE}
 
 Name: xbmc
 Version: 11.0
-Release: 0.9.%{PRERELEASE}%{?dist}
+Release: 0.10.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -269,6 +269,9 @@ rm -rf $RPM_BUILD_ROOT
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Fri Mar  9 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.10.Eden_rc2
+- Update to Eden release candidate 2 (rc2)
+
 * Fri Mar  9 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.9.Eden_beta2
 - Temporarily drop clientevents package (currently fails to build) to
   fix overall FTBFS.
