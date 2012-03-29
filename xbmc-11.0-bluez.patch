@@ -1,0 +1,35 @@
+*** bluez-4.97/lib/bluetooth.h.orig	2012-01-16 09:06:07.171931288 +0100
+--- bluez-4.97/lib/bluetooth.h	2012-01-16 09:07:02.523930152 +0100
+***************
+*** 113,119 ****
+  ({						\
+  	struct __attribute__((packed)) {	\
+  		typeof(*(ptr)) __v;		\
+! 	} *__p = (void *) (ptr);		\
+  	__p->__v;				\
+  })
+  
+--- 113,119 ----
+  ({						\
+  	struct __attribute__((packed)) {	\
+  		typeof(*(ptr)) __v;		\
+! 	} *__p = (typeof(__p)) (ptr);		\
+  	__p->__v;				\
+  })
+  
+***************
+*** 121,127 ****
+  do {						\
+  	struct __attribute__((packed)) {	\
+  		typeof(*(ptr)) __v;		\
+! 	} *__p = (void *) (ptr);		\
+  	__p->__v = (val);			\
+  } while(0)
+  
+--- 121,127 ----
+  do {						\
+  	struct __attribute__((packed)) {	\
+  		typeof(*(ptr)) __v;		\
+! 	} *__p = (typeof(__p)) (ptr);		\
+  	__p->__v = (val);			\
+  } while(0)
