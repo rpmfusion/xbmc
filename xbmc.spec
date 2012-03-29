@@ -1,11 +1,11 @@
-#global PRERELEASE Dharma_rc2
+%global PRERELEASE Eden_rc2
 %global DIRVERSION %{version}
 # use below for pre-release
-#global DIRVERSION %{PRERELEASE}
+#global DIRVERSION %{version}-%{PRERELEASE}
 
 Name: xbmc
-Version: 10.1
-Release: 7%{?dist}
+Version: 11.0
+Release: 1%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -21,11 +21,11 @@ Source1: xbmc-generate-tarball-xz.sh
 
 # new patches for bootstrap
 # no trac ticket filed as yet
-Patch1: xbmc-10-bootstrap.patch
+Patch1: xbmc-11.0-bootstrap.patch
 
 # filed ticket, but patch still needs work
 # http://trac.xbmc.org/ticket/9658
-Patch2: xbmc-10-dvdread.patch
+Patch2: xbmc-11.0-dvdread.patch
 
 # and new problem with zlib in cximage
 # trac ticket filed: http://trac.xbmc.org/ticket/9659
@@ -34,23 +34,16 @@ Patch3: xbmc-10-disable-zlib-in-cximage.patch
 
 # need to file trac ticket, this patch just forces external hdhomerun
 # functionality, needs to be able fallback internal version
-Patch4: xbmc-10-hdhomerun.patch
+Patch4: xbmc-11.0-hdhomerun.patch
 
-# fix "@#" in Makefile which seem to screw things up no trac filed
-# yet, don't know why this isn't a problem on other Linux systems
-Patch5: xbmc-10-Makefile.patch
 
-# add patch from upstream trac http://trac.xbmc.org/ticket/9584
-# to find Python 2.7 (needed for F-14+)
-Patch6: xbmc-10-python2.7.patch
-
-# patch from upstream to fix builds for GCC 4.6.x
-# (committed to git upstream: http://trac.xbmc.org/ticket/11383)
-Patch7: xbmc-Dharma-10.1-gcc-4.6-fixes-0.1.patch
-
-# fixes https://bugzilla.rpmfusion.org/show_bug.cgi?id=1905
-# patch from OpenElec distribution
-Patch9: xbmc-10.1-Dharma-335-Python_parse_had_wrong_native_type-0.1.patch
+# libpng 1.5 patch from gentoo
+# http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/media-tv/xbmc/files/xbmc-10.1-libpng-1.5.patch
+# following two patches both submitted upstream: 
+# http://trac.xbmc.org/ticket/12001
+Patch5: xbmc-10.1-libpng-1.5.patch
+# second libpng 1.5 patch avoids use of uninitialised values
+Patch6: xbmc-11.0-libpng-1.5-fix-plt-trn-get.patch
 
 ExcludeArch: ppc64
 Buildroot: %{_tmppath}/%{name}-%{version}
@@ -115,7 +108,7 @@ BuildRequires: libtool
 BuildRequires: libtiff-devel
 BuildRequires: libvdpau-devel
 BuildRequires: libdvdread-devel
-#BuildRequires: ffmpeg-devel
+BuildRequires: ffmpeg-devel
 BuildRequires: faad2-devel
 BuildRequires: pulseaudio-libs-devel
 BuildRequires: libdca-devel
@@ -126,13 +119,18 @@ BuildRequires: libmodplug-devel
 BuildRequires: libmicrohttpd-devel
 BuildRequires: expat-devel
 BuildRequires: zip
-%if 0%{?fedora} >= 14
 BuildRequires: gettext-autopoint
-%else
-BuildRequires: gettext
-%endif
 BuildRequires: librtmp-devel
 BuildRequires: libbluray-devel
+#BuildRequires: libbluray-devel >= 0.2.1
+BuildRequires: yajl-devel
+BuildRequires: bluez-libs-devel
+BuildRequires: cwiid-devel
+
+# nfs-utils-lib-devel package currently broken
+#BuildRequires: nfs-utils-lib-devel
+# afp build currently broken
+#BuildRequires: afpfs-ng-devel
 # VAAPI currently not working, comment-out
 #BuildRequires: libva-freeworld-devel
 
@@ -143,12 +141,27 @@ Requires: libcrystalhd
 Requires: librtmp
 Requires: libbluray
 
+# needed when doing a minimal install, see
+# https://bugzilla.rpmfusion.org/show_bug.cgi?id=1844
+Requires: glx-utils
+Requires: xorg-x11-utils
+
 # These are just symlinked to, but needed both at build-time
 # and for installation
 BuildRequires: python-imaging
 Requires: python-imaging
-BuildRequires: python-sqlite2
-Requires: python-sqlite2
+
+%post
+/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+
+%postun
+if [ $1 -eq 0 ] ; then
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+fi
+
+%posttrans
+/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %description
 XBMC media center is a free cross-platform media-player jukebox and
@@ -156,22 +169,31 @@ entertainment hub.  XBMC can play a spectrum of of multimedia formats,
 and featuring playlist, audio visualizations, slideshow, and weather
 forecast functions, together third-party plugins.
 
+#%%package eventclients
+#%Summary: Media center event client remotes
+
+#%%description eventclients
+#%This package contains support for using XBMC with the PS3 Remote, the Wii
+#%Remote, a J2ME based remote and the command line xbmc-send utility.
+
+#%%package eventclients-devel
+#%Summary: Media center event client remotes development files
+#%Requires:	%{name}-eventclients = %{version}-%{release}
+
+#%%description eventclients-devel
+#%This package contains the development header files for the eventclients
+#%library.
+
 %prep
 
 %setup -q -n %{name}-%{DIRVERSION}
 
 %patch1 -p0
 %patch2 -p0
-%patch3 -p0
-%patch4 -p1
-%patch5 -p0
-%patch6 -p0
-%patch7 -p1
-%patch9 -p1
-
-# Prevent rerunning the autotools.
-touch -r xbmc/screensavers/rsxs-0.9/aclocal.m4 \
-$(find xbmc/screensavers/rsxs-0.9 \( -name 'configure.*' -o -name 'Makefile.*' \))
+#patch3 -p0
+%patch4 -p0
+#patch5 -p2
+#patch6 -p1
 
 %build
 
@@ -180,16 +202,12 @@ chmod +x bootstrap
 # Can't use export nor %%configure (implies using export), because
 # the Makefile pile up *FLAGS in this case.
 
-# FIXME: disable using external ffmpeg for the moment, until such time
-# as either we backport a fix for 0.8 ffmpeg or we build XBMC Eden (11.x)
-# --enable-external-ffmpeg
 ./configure \
 --prefix=%{_prefix} --bindir=%{_bindir} --includedir=%{_includedir} \
 --libdir=%{_libdir} --datadir=%{_datadir} \
 --with-lirc-device=/var/run/lirc/lircd \
 --enable-goom \
---enable-external-python \
---disable-libdts --disable-liba52 \
+--enable-external-libraries \
 --disable-dvdcss \
 --disable-optimizations --disable-debug \
 CPPFLAGS="-I/usr/include/ffmpeg" \
@@ -199,16 +217,12 @@ LDFLAGS="-fPIC" \
 LIBS="-L%{_libdir}/mysql -lhdhomerun $LIBS" \
 ASFLAGS=-fPIC
 
-# disable the following:
-# --enable-external-libraries
-# enumerate all the external libraries because the libdts/liba52 detection 
-# is broken upstream: http://trac.xbmc.org/ticket/9277
-
 make %{?_smp_mflags} VERBOSE=1
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make DESTDIR=$RPM_BUILD_ROOT install
+#make -C tools/EventClients DESTDIR=$RPM_BUILD_ROOT install 
 # remove the doc files from unversioned /usr/share/doc/xbmc, they should be in versioned docdir
 rm -r $RPM_BUILD_ROOT/%{_datadir}/doc/
 
@@ -220,8 +234,8 @@ desktop-file-install \
 # the system Python interpreter, we also want to use the system libraries
 install -d $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pil/lib
 ln -s %{python_sitearch}/PIL $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pil/lib/PIL
-install -d $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib
-ln -s %{python_sitearch}/pysqlite2 $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib/pysqlite2
+#install -d $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib
+#ln -s %{python_sitearch}/pysqlite2 $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib/pysqlite2
 
 
 %clean
@@ -238,10 +252,76 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/xbmc.desktop
 %{_datadir}/icons/hicolor/*/*/*.png
 
+#%%files eventclients
+#%%defattr(-,root,root)
+#%%python_sitelib/xbmc
+#%%dir %{_datadir}/pixmaps/xbmc
+#%%{_datadir}/pixmaps/xbmc/*.png
+#%%{_bindir}/xbmc-j2meremote
+#%%{_bindir}/xbmc-ps3d
+#%%{_bindir}/xbmc-ps3remote
+#%%{_bindir}/xbmc-send
+#%%{_bindir}/xbmc-wiiremote
+
+#%%files eventclients-devel
+#%%defattr(-,root,root)
+#%%dir %{_includedir}/xbmc
+#%%{_includedir}/xbmc/xbmcclient.h
+
 %changelog
-* Tue Dec 20 2011 Alex Lancaster <alexlan[AT] fedoraproject org> - 10.1-7
+* Sun Mar 25 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-1
+- Update to Eden final 11.0
+- Drop libpng 1.5 patches, applied upstream
+
+* Fri Mar  9 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.10.Eden_rc2
+- Update to Eden release candidate 2 (rc2)
+
+* Fri Mar  9 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.9.Eden_beta2
+- Temporarily drop clientevents package (currently fails to build) to
+  fix overall FTBFS.
+
+* Fri Mar  9 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.8.Eden_beta2
+- Drop python-sqlite2 BR (obsoleted package), should use internal sqlite3 (#2217)
+
+* Fri Mar 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 11.0-0.7.Eden_beta2
+- Rebuilt for FFmpeg/x264
+
+* Sun Jan 29 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.6.Eden_beta2
+- Update to Eden beta2
+
+* Fri Dec 30 2011 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.5.Eden_beta1
+- Add additional patch from http://trac.xbmc.org/ticket/12001 to
+  fix uninitialised pointer with libpng 1.5
+- Remove upstreamed, or otherwise obsoleted patches 
+
+* Thu Dec 29 2011 Alex Lancaster <alexlan[AT] fedoraproject org> - 11.0-0.4.Eden_beta1
+- Enable libpng 1.5 patch, still needed, upstream bug is at: 
+  http://trac.xbmc.org/ticket/12001
+
+* Wed Dec 28 2011 Alex Lancaster <alexlan[AT] fedoraproject org> - 11.0-0.3.Eden_beta1
+- Added glx-utils and xorg-x11-utils as Requires, so selecting
+  minimal install works out of the box (#1844)
+
+* Wed Dec 28 2011 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.2.Eden_beta1
+- Re-enable external ffmpeg
+- Add EventClients sub-package (patch thanks to Ben Konrath <ben@bagu.org>)
+- More spec cleaning
+
+* Wed Dec 28 2011 Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-0.1.Eden_beta1
+- Update to 11.0 beta1
+- Disable patches that are obsolete (keep around while testing)
+- Update icon cache (#2097)
+
+* Tue Dec 20 2011 Alex Lancaster <alexlan[AT] fedoraproject org> - 10.1-9
 - Add patch from OpenElec distribution to fix broken YouTube plugin
   (should fix #1905)
+
+* Wed Dec 14 2011 Xavier Bachelot <xavier@bachelot.org> - 10.1-8
+- Add patch for newer libbluray support.
+- Add patch for libpng 1.5 support.
+
+* Wed Nov 23 2011 Nicolas Chauvet <kwizart@gmail.com> - 10.1-7
+- Rebuilt for libcdio
 
 * Sat Nov  5 2011 Alex Lancaster <alexlan[AT]fedoraproject org> - 10.1-6
 - Disable using external ffmpeg for the moment, until such time as
