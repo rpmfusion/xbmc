@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 11.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -297,6 +297,9 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Tue Jun 26 2012 Nicolas Chauvet <kwizart@gmail.com> - 11.0-6
+- Rebuilt for FFmpeg
+
 * Wed Jun  6 2012  Alex Lancaster <alexlan[AT]fedoraproject org> - 11.0-5
 - Add missing BRs for libudev-devel and libplist-devel (needed for AirPlay)
 
