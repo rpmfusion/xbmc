@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 11.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -137,7 +137,7 @@ BuildRequires: libmodplug-devel
 BuildRequires: libmicrohttpd-devel
 BuildRequires: expat-devel
 BuildRequires: zip
-BuildRequires: libudev-devel  
+BuildRequires: pkgconfig(libudev)
 # for AirPlay support
 BuildRequires: libplist-devel
 %if 0%{?el6}
@@ -318,6 +318,9 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Wed Jul 11 2012 Nicolas Chauvet <kwizart@gmail.com> - 11.0-8
+- Switch to pkgconfig(libudev)
+
 * Sun Jul 01 2012 Ken Dreyer <ktdreyer@ktdreyer..com> - 11.0-7
 - Set up with_* conditionals for optional dependencies
 - Disable hdhomerun and crystalhd for EPEL (#2339)
