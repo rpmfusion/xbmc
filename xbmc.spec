@@ -1,6 +1,6 @@
 %global PRERELEASE Frodo_alpha6
 #global DIRVERSION %{version}
-# use below for pre-release
+# use the line below for pre-releases
 %global DIRVERSION %{version}-%{PRERELEASE}
 
 Name: xbmc
@@ -158,6 +158,8 @@ BuildRequires: cwiid-devel
 %endif
 BuildRequires: taglib-devel >= 1.8
 BuildRequires: swig
+BuildRequires: java-devel
+BuildRequires: lame-devel
 
 # nfs-utils-lib-devel package currently broken
 #BuildRequires: nfs-utils-lib-devel
@@ -245,11 +247,12 @@ chmod +x bootstrap
 --with-lirc-device=/var/run/lirc/lircd \
 --enable-goom \
 --enable-external-libraries \
+--enable-pulse \
 --disable-dvdcss \
 --disable-optimizations --disable-debug \
 CPPFLAGS="-I/usr/include/ffmpeg" \
-CFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/afpfs-ng/ -I/usr/include/ffmpeg -D__STDC_CONSTANT_MACROS" \
-CXXFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/afpfs-ng/ -I/usr/include/ffmpeg -D__STDC_CONSTANT_MACROS" \
+CFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/afpfs-ng/ -I/usr/include/ffmpeg -I/usr/include/samba-4.0/ -D__STDC_CONSTANT_MACROS" \
+CXXFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/afpfs-ng/ -I/usr/include/ffmpeg -I/usr/include/samba-4.0/ -D__STDC_CONSTANT_MACROS" \
 LDFLAGS="-fPIC" \
 LIBS="-L%{_libdir}/mysql %{?_with_hdhomerun:-lhdhomerun} $LIBS" \
 ASFLAGS=-fPIC
@@ -291,7 +294,7 @@ fi
 
 %files
 %defattr(-,root,root)
-%doc copying.txt keymapping.txt LICENSE.GPL README
+%doc copying.txt CONTRIBUTORS LICENSE.GPL README
 %doc docs
 %{_bindir}/xbmc
 %{_bindir}/xbmc-standalone
@@ -323,7 +326,8 @@ fi
 - Use "12.0" as version, rather than "12.8"
 - Drop desktop patch (now in Frodo alpha6)
 - Add BR for taglib-devel >= 1.8 (libid3tag is being phased out)
-- BR for swig
+- BR for swig and java-devel
+- Add CFLAGS option to recognize Samba 4.0 (in f18+)
 - Rebase patches to 12.0/Frodo where necessary
 
 * Sun Aug 28 2012 Ken Dreyer <ktdreyer@ktdreyer..com> - 12.8-0.1.Frodo_alpha4
