@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 12.0
-Release: 0.1.%{PRERELEASE}%{?dist}
+Release: 0.2.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -55,7 +55,9 @@ Patch4: xbmc-12.0-hdhomerun.patch
 # Optional deps (not in EPEL)
 # (libbluray in EPEL 6 is too old.)
 %{?fedora:%global _with_hdhomerun 1}
+%ifarch x86_64 i686
 %{?fedora:%global _with_crystalhd 1}
+%endif
 %{?fedora:%global _with_libbluray 1}
 %{?fedora:%global _with_cwiid     1}
 
@@ -321,6 +323,9 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Sat Nov 24 2012 Nicolas Chauvet <kwizart@gmail.com> - 12.0-0.2.Frodo_alpha6
+- Rebuilt for FFmpeg 1.0
+
 * Thu Oct  4 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 12.0-0.1.Frodo_alpha6
 - Update to Frodo alpha 6
 - Use "12.0" as version, rather than "12.8"
