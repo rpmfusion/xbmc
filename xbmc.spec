@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 12.0
-Release: 0.4.%{PRERELEASE}%{?dist}
+Release: 0.4.%{PRERELEASE}%{?dist}.1
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -342,6 +342,9 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Thu Dec 13 2012 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.4.Frodo_rc1.f18.1
+- Bumping release for bad tag in F18 (sigh)
+
 * Thu Dec 13 2012 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.4.Frodo_rc1
 - Disable crystalhd on non-x86 (by kwizart)
 - Enable VAAPI: add BR: libva-devel (#2613)
