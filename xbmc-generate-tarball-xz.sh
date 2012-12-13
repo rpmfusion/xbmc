@@ -2,7 +2,7 @@
 
 MAJORVERSION=12
 MINORVERSION=0
-PRERELEASE=Frodo_alpha6
+PRERELEASE=Frodo_rc1
 
 VERSION=${MAJORVERSION}.${MINORVERSION}${PRERELEASE:+-${PRERELEASE}}
 
@@ -52,7 +52,7 @@ find \( -type f -name '*.so' -o -name '*.DLL' -o -name '*.dll' -o -name '*.lib' 
 # except for libass, cpluff, jsoncpp (need to figure out how to
 # remove these too)
 # xbmc-dll-symbols seems to be XBMC-specific
-for i in enca freetype liblame libmicrohttpd libmodplug libbluray librtmp win32
+for i in enca freetype libbluray liblame libmicrohttpd libmodplug librtmp win32
 do
     rm -r lib/$i
 done
