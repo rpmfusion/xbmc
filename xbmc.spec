@@ -1,11 +1,11 @@
-%global PRERELEASE Frodo_alpha6
+%global PRERELEASE Frodo_rc1
 #global DIRVERSION %{version}
 # use the line below for pre-releases
 %global DIRVERSION %{version}-%{PRERELEASE}
 
 Name: xbmc
 Version: 12.0
-Release: 0.2.%{PRERELEASE}%{?dist}
+Release: 0.4.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -19,9 +19,15 @@ Source0: %{name}-%{DIRVERSION}-patched.tar.xz
 # where <version> is the particular version being used
 Source1: xbmc-generate-tarball-xz.sh
 
-# new patches for bootstrap
-# no trac ticket filed as yet
-Patch1: xbmc-12.0-bootstrap.patch
+# xbmc pvr addons are shipped as a separate git repo.
+Source2: xbmc-pvr-addons-1e666ced21-patched.tar.xz
+Source3: xbmc-pvr-addons-generate-tarball-xz.sh
+
+# https://github.com/xbmc/xbmc/pull/1725.patch
+# We need this as long as we build addons together with the main XBMC
+# software. (This will probably never get merged upstream; see pull
+# request for details.)
+Patch1: xbmc-12.0-pvraddons-with-dependencies.patch
 
 # filed ticket, but patch still needs work
 # http://trac.xbmc.org/ticket/9658
@@ -60,6 +66,7 @@ Patch4: xbmc-12.0-hdhomerun.patch
 %endif
 %{?fedora:%global _with_libbluray 1}
 %{?fedora:%global _with_cwiid     1}
+%{?fedora:%global _with_libssh    1}
 
 ExcludeArch: ppc64
 Buildroot: %{_tmppath}/%{name}-%{version}
@@ -78,7 +85,11 @@ BuildRequires: glew-devel
 BuildRequires: libstdc++-devel
 BuildRequires: glib2-devel
 BuildRequires: libjasper-devel
+%if 0%{?el6}
 BuildRequires: libjpeg-devel
+%else
+BuildRequires: libjpeg-turbo-devel
+%endif
 BuildRequires: libogg-devel
 BuildRequires: libpng-devel
 BuildRequires: libstdc++-devel
@@ -162,12 +173,15 @@ BuildRequires: taglib-devel >= 1.8
 BuildRequires: swig
 BuildRequires: java-devel
 BuildRequires: lame-devel
+%if 0%{?_with_libssh}
+BuildRequires: libssh-devel
+%endif
+BuildRequires: libcap-devel
 
 # nfs-utils-lib-devel package currently broken
 #BuildRequires: nfs-utils-lib-devel
 BuildRequires: afpfs-ng-devel
-# VAAPI currently not working, comment-out
-#BuildRequires: libva-freeworld-devel
+BuildRequires: libva-devel
 
 # need explicit requires for these packages
 # as they are dynamically loaded via XBMC's arcane 
@@ -216,22 +230,23 @@ forecast functions, together third-party plugins.
 
 %prep
 
-%setup -q -n %{name}-%{DIRVERSION}
+%setup -q -a 2 -n %{name}-%{DIRVERSION}
 
-%patch1 -p0
+%patch1 -p1
 %patch2 -p0
 #patch3 -p0
 %patch4 -p1
 #patch5 -p1
-#patch6 -p1
 
 %if 0%{?_with_hdhomerun}
 %else
   # Remove hdhomerun from the build.
   pushd xbmc/filesystem/
-    rm HDHomeRun.cpp HDHomeRun.h
-    sed -i Makefile.in -e '/HDHomeRun\.cpp/d'
-    sed -i FactoryDirectory.cpp -e '/HomeRun/d'
+    rm HDHomeRunFile.cpp HDHomeRunFile.h
+    rm HDHomeRunDirectory.cpp HDHomeRunDirectory.h
+    sed -i Makefile.in -e '/HDHomeRunFile\.cpp/d'
+    sed -i Makefile.in -e '/HDHomeRunDirectory\.cpp/d'
+    sed -i DirectoryFactory.cpp -e '/HomeRun/d'
     sed -i FileFactory.cpp -e '/HomeRun/d'
   popd
 %endif
@@ -250,6 +265,10 @@ chmod +x bootstrap
 --enable-goom \
 --enable-external-libraries \
 --enable-pulse \
+--enable-pvraddons-with-dependencies \
+%if 0%{?_with_libssh} == 0
+--disable-ssh \
+%endif
 --disable-dvdcss \
 --disable-optimizations --disable-debug \
 CPPFLAGS="-I/usr/include/ffmpeg" \
@@ -323,8 +342,33 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
-* Sat Nov 24 2012 Nicolas Chauvet <kwizart@gmail.com> - 12.0-0.2.Frodo_alpha6
-- Rebuilt for FFmpeg 1.0
+* Thu Dec 13 2012 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.4.Frodo_rc1
+- Disable crystalhd on non-x86 (by kwizart)
+- Enable VAAPI: add BR: libva-devel (#2613)
+- Add libcap BR (allows binding on privileged ports)
+- Add patch to build pvraddons-with-dependencies
+
+* Wed Dec 12 2012 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.3.Frodo_rc1
+- Update to Frodo RC 1
+
+* Wed Dec 05 2012 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.3.Frodo_beta2
+- Update to Frodo beta 2
+- Drop patch for linking against pulse-simple
+- libjpeg is gone in Fedora. Conditionally build against libjpeg-turbo
+
+* Mon Nov 19 2012 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.3.Frodo_alpha7
+- Rebase HDHomeRun removal to match upstream's file names
+- Conditionally disable libssh BR (unavailable in EL6)
+
+* Tue Nov 14 2012 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.2.Frodo_alpha7
+- Add pvr addons
+
+* Tue Nov 13 2012 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.1.Frodo_alpha7
+- Update to Frodo alpha 7
+- Drop bootstrap patch (system libdvdread works properly now)
+- Add upstream patch for linking against pulse-simple
+- Add BR for libssh
+- Rebase external hdhomerun patch onto alpha7
 
 * Thu Oct  4 2012 Alex Lancaster <alexlan[AT]fedoraproject org> - 12.0-0.1.Frodo_alpha6
 - Update to Frodo alpha 6
