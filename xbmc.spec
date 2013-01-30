@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 12.0
-Release: 0.6.%{PRERELEASE}%{?dist}
+Release: 0.7.%{PRERELEASE}%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -325,6 +325,9 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Wed Jan 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 12.0-0.7.Frodo_rc3
+- Rebuilt for ffmpeg
+
 * Fri Jan 04 2013 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-0.6.Frodo_rc3
 - Update to Frodo RC 3
 - Update PVR addons snapshot to match snapshot bundled in rc3
