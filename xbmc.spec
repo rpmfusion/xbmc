@@ -4,8 +4,8 @@
 #global DIRVERSION %{version}-%{PRERELEASE}
 
 Name: xbmc
-Version: 12.0
-Release: 1%{?dist}
+Version: 12.1
+Release: 2%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -20,7 +20,7 @@ Source0: %{name}-%{DIRVERSION}-patched.tar.xz
 Source1: xbmc-generate-tarball-xz.sh
 
 # xbmc pvr addons are shipped as a separate git repo.
-Source2: xbmc-pvr-addons-96774c4-patched.tar.xz
+Source2: xbmc-pvr-addons-590f862-patched.tar.xz
 Source3: xbmc-pvr-addons-generate-tarball-xz.sh
 
 # https://github.com/xbmc/xbmc/pull/1725.patch
@@ -41,6 +41,12 @@ Patch3: xbmc-10-disable-zlib-in-cximage.patch
 # need to file trac ticket, this patch just forces external hdhomerun
 # functionality, needs to be able fallback internal version
 Patch4: xbmc-12.0-hdhomerun.patch
+
+# Add better support for PA.
+# These patches are upstream in https://github.com/xbmc/xbmc/pull/2240, but
+# they are not in the Frodo (12.x) branch.
+Patch5: xbmc-12.0-fix-crash-on-player-stop.patch
+Patch6: xbmc-12.0-fix-pa-buffer-overruns.patch
 
 # Optional deps (not in EPEL)
 # (libbluray in EPEL 6 is too old.)
@@ -332,6 +338,13 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Thu Apr 25 2013 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.1-2
+- Add patches for PA (https://github.com/xbmc/xbmc/pull/2240). Fixes #2655
+
+* Wed Apr 24 2013 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.1-1
+- Update to Frodo 12.1
+- Update PVR addons snapshot to match snapshot bundled in 12.1
+
 * Tue Feb 05 2013 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.0-1
 - Update to Frodo final
 - Add libcec dependency

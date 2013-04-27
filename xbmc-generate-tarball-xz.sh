@@ -1,7 +1,7 @@
 #!/bin/sh
 
 MAJORVERSION=12
-MINORVERSION=0
+MINORVERSION=1
 #PRERELEASE=Frodo_rc3
 
 VERSION=${MAJORVERSION}.${MINORVERSION}${PRERELEASE:+-${PRERELEASE}}
@@ -15,7 +15,7 @@ if [[ ! -f xbmc-$VERSION.zip ]]; then
 fi
 
 # extract zipball
-rm -r xbmc-xbmc-*
+rm -rf xbmc-xbmc-*
 unzip xbmc-$VERSION.zip
 
 # Repair GitHub's odd auto-generated top-level directory...
