@@ -5,7 +5,7 @@
 
 Name: xbmc
 Version: 12.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -330,6 +330,9 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Wed Oct 02 2013 Nicolas Chauvet <kwizart@gmail.com> - 12.2-5
+- Rebuilt
+
 * Thu Aug 15 2013 Nicolas Chauvet <kwizart@gmail.com> - 12.2-4
 - Rebuilt for FFmpeg 2.0.x
 
