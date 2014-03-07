@@ -4,8 +4,8 @@
 #global DIRVERSION %{version}-%{PRERELEASE}
 
 Name: xbmc
-Version: 12.2
-Release: 3%{?dist}
+Version: 12.3
+Release: 1%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -330,6 +330,9 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Fri Mar 07 2014 Michael Cronenworth <mike@cchtml.com> - 12.3-1
+- Update to Frodo 12.3
+
 * Tue Jun 04 2013 Ken Dreyer <ktdreyer@ktdreyer.com> - 12.2-3
 - force building with libcec (#2798)
 - add $DVDREAD_CFLAGS in dvdread patch (#2820)
