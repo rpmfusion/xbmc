@@ -1,7 +1,7 @@
-From f79620d0bd702d4257e28e3083c893522a008c2d Mon Sep 17 00:00:00 2001
+From 6c05d16be3bae96479363c2117c28c4261374ab4 Mon Sep 17 00:00:00 2001
 From: Ken Dreyer <ktdreyer@ktdreyer.com>
 Date: Fri, 24 Aug 2012 19:34:47 -0600
-Subject: [PATCH 2/2] Fedora: use external hdhomerun
+Subject: [PATCH 2/3] Fedora: use external hdhomerun
 
 Original patch by Alex Lancaster <alexlan[AT]fedoraproject org>
 (cherry picked from commit ef5c269992b32d67de7547e9f530b6c971381f45)
@@ -12,10 +12,12 @@ Original patch by Alex Lancaster <alexlan[AT]fedoraproject org>
  3 files changed, 53 insertions(+), 31 deletions(-)
 
 diff --git a/Makefile.in b/Makefile.in
-index 618ca25..842fbc6 100644
+index 8eda3c4..fbb19bd 100644
 --- a/Makefile.in
 +++ b/Makefile.in
-@@ -205,7 +205,6 @@ endif
+@@ -205,11 +205,10 @@ PAPCODECS_DIRS+= \
+ endif
+ 
  LIB_DIRS=\
  	lib/cximage-6.0 \
  	lib/libexif \
@@ -23,7 +25,11 @@ index 618ca25..842fbc6 100644
  	lib/cpluff \
  	lib/xbmc-dll-symbols
  
-@@ -411,8 +410,6 @@ libexif: dllloader
+ ifeq (@USE_MYSQL@,1)
+ LIB_DIRS += lib/cmyth
+@@ -413,12 +412,10 @@ else
+ endif
+ libexif: dllloader
  	$(MAKE) -C lib/libexif
  cmyth: dllloader
  	$(MAKE) -C lib/cmyth
@@ -31,21 +37,27 @@ index 618ca25..842fbc6 100644
 -	$(MAKE) -C lib/libhdhomerun
  papcodecs: dllloader dvdpcodecs
  	test -d system/players/paplayer || mkdir system/players/paplayer
- 	$(MAKE) -C lib/xbadpcm
-@@ -441,7 +438,7 @@ endif
+ 	$(MAKE) -C lib/vgmstream
+ 	$(MAKE) -C lib/timidity
+ 	$(MAKE) -C lib/nosefart
+@@ -442,11 +439,11 @@ ifeq (@USE_PVR_ADDONS@,1)
+ 	$(MAKE) -C pvr-addons
+ endif
  
- codecs: papcodecs dvdpcodecs
+ codecs: papcodecs dvdpcodecs dvdpextcodecs
  
 -libs: libhdhomerun imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
 +libs: imagelib libexif system/libcpluff-@ARCH@.so $(CMYTH)
  
  externals: codecs libs visualizations screensavers libaddon pvraddons
  
+ xcode_depends: \
+ 	codecs libs visualizations screensavers eventclients skins libaddon \
 diff --git a/configure.in b/configure.in
-index 7a52036..717bb3b 100644
+index 343292e..2060e24 100644
 --- a/configure.in
 +++ b/configure.in
-@@ -2518,7 +2518,6 @@ OUTPUT_FILES="Makefile \
+@@ -2544,7 +2544,6 @@ OUTPUT_FILES="Makefile \
      lib/libexif/Makefile \
      lib/libXDAAP/Makefile \
      lib/cmyth/Makefile \
@@ -149,5 +161,5 @@ index 150b00f..57936be 100644
  };
  
 -- 
-1.8.3.1
+1.8.5.3
 

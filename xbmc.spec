@@ -1,4 +1,4 @@
-%global PRERELEASE Gotham_alpha9
+%global PRERELEASE Gotham_beta2
 #%%global DIRVERSION %{version}
 # use the line below for pre-releases
 %global DIRVERSION %{version}-%{PRERELEASE}
@@ -6,7 +6,7 @@
 
 Name: xbmc
 Version: 13.0
-Release: 0.2.Gotham_alpha9%{?dist}
+Release: 0.7.Gotham_beta2%{?dist}
 URL: http://www.xbmc.org/
 
 Source0: %{name}-%{DIRVERSION}-patched.tar.xz
@@ -25,20 +25,31 @@ Patch1: xbmc-13.0-dvdread.patch
 # functionality, needs to be able fallback internal version
 Patch2: xbmc-13.0-hdhomerun.patch
 
+# Avoid segfault during goom's configure
+# https://bugzilla.redhat.com/1069079
+Patch3: xbmc-13.0-libmysqlclient.patch
+
+# External ffmpeg patches
+Patch100: 0001-Revert-drop-support-for-external-ffmpeg.patch
+Patch101: 0002-Revert-linux-link-ffmpeg-statically.patch
+Patch102: 0003-makefile-include.patch
 
 # Optional deps (not in EPEL)
+%if 0%{?fedora}
 # (libbluray in EPEL 6 is too old.)
-%{?fedora:%global _with_hdhomerun 1}
-%ifarch x86_64 i686
-%{?fedora:%global _with_crystalhd 1}
+%global with_libbluray 1
+%global with_cwiid 1
+%global with_libssh 1
+%global with_libcec 1
+%global with_external_ffmpeg 1
 %endif
-%{?fedora:%global _with_libbluray 1}
-%{?fedora:%global _with_cwiid     1}
-%{?fedora:%global _with_libssh    1}
-%{?fedora:%global _with_libcec    1}
+
+%ifarch x86_64 i686
+%global with_crystalhd 1
+%global with_hdhomerun 1
+%endif
 
 ExcludeArch: ppc64
-Buildroot: %{_tmppath}/%{name}-%{version}
 Summary: Media center
 License: GPLv2+ and GPLv3+
 Group: Applications/Multimedia
@@ -104,15 +115,17 @@ BuildRequires: libtool
 BuildRequires: libtiff-devel
 BuildRequires: libvdpau-devel
 BuildRequires: libdvdread-devel
+%if 0%{with_external_ffmpeg}
 BuildRequires: ffmpeg-devel
+%endif
 BuildRequires: faad2-devel
 BuildRequires: pulseaudio-libs-devel
 BuildRequires: libdca-devel
 BuildRequires: libass-devel >= 0.9.7
-%if 0%{?_with_hdhomerun}
+%if 0%{with_hdhomerun}
 BuildRequires: hdhomerun-devel
 %endif
-%if 0%{?_with_crystalhd}
+%if 0%{with_crystalhd}
 BuildRequires: libcrystalhd-devel
 %endif
 BuildRequires: libmodplug-devel
@@ -128,27 +141,30 @@ BuildRequires: gettext-devel
 BuildRequires: gettext-autopoint
 %endif
 BuildRequires: librtmp-devel
-%if 0%{?_with_libbluray}
+%if 0%{with_libbluray}
 BuildRequires: libbluray-devel
 #BuildRequires: libbluray-devel >= 0.2.1
 %endif
 BuildRequires: yajl-devel
 BuildRequires: bluez-libs-devel
 BuildRequires: tinyxml-devel
-%if 0%{?_with_cwiid}
+%if 0%{with_cwiid}
 BuildRequires: cwiid-devel
 %endif
 BuildRequires: taglib-devel >= 1.8
 BuildRequires: swig
 BuildRequires: java-devel
 BuildRequires: lame-devel
-%if 0%{?_with_libssh}
+%if 0%{with_libssh}
 BuildRequires: libssh-devel
 %endif
 BuildRequires: libcap-devel
-%if 0%{?_with_libcec}
+%if 0%{with_libcec}
 BuildRequires: libcec-devel
 %endif
+BuildRequires: libxml-devel
+BuildRequires: libxslt-devel
+BuildRequires: trousers-devel
 
 # nfs-utils-lib-devel package currently broken
 #BuildRequires: nfs-utils-lib-devel
@@ -160,16 +176,16 @@ BuildRequires: libva-devel
 # pseudo-DLL loading scheme (sigh)
 Requires: librtmp
 Requires: libmad
-%if 0%{?_with_hdhomerun}
+%if 0%{with_hdhomerun}
 BuildRequires: hdhomerun
 %endif
-%if 0%{?_with_crystalhd}
+%if 0%{with_crystalhd}
 Requires: libcrystalhd
 %endif
-%if 0%{?_with_libbluray}
+%if 0%{with_libbluray}
 Requires: libbluray
 %endif
-%if 0%{?_with_libcec}
+%if 0%{with_libcec}
 Requires: libcec
 %endif
 
@@ -221,8 +237,13 @@ libraries, you need to install this package.
 
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
-%if 0%{?_with_hdhomerun}
+%patch100 -p1
+%patch101 -p1
+%patch102 -p1
+
+%if 0%{with_hdhomerun}
 %else
   # Remove hdhomerun from the build.
   pushd xbmc/filesystem/
@@ -246,22 +267,33 @@ chmod +x bootstrap
 --prefix=%{_prefix} --bindir=%{_bindir} --includedir=%{_includedir} \
 --libdir=%{_libdir} --datadir=%{_datadir} \
 --with-lirc-device=/var/run/lirc/lircd \
---enable-goom \
 --enable-external-libraries \
+--enable-goom \
 --enable-pulse \
-%if 0%{?_with_libcec}
+%if 0%{with_libcec}
 --enable-libcec \
+%else
+--disable-libcec \
 %endif
-%if 0%{?_with_libssh} == 0
+%if 0%{with_libssh}
+--enable-ssh \
+%else
 --disable-ssh \
 %endif
 --disable-dvdcss \
 --disable-optimizations --disable-debug \
+%if 0%{with_external_ffmpeg}
 CPPFLAGS="-I/usr/include/ffmpeg" \
 CFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/afpfs-ng/ -I/usr/include/ffmpeg -I/usr/include/samba-4.0/ -D__STDC_CONSTANT_MACROS" \
 CXXFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/afpfs-ng/ -I/usr/include/ffmpeg -I/usr/include/samba-4.0/ -D__STDC_CONSTANT_MACROS" \
+%else
+CFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/afpfs-ng/ -I/usr/include/samba-4.0/ -D__STDC_CONSTANT_MACROS" \
+CXXFLAGS="$RPM_OPT_FLAGS -fPIC -I/usr/include/afpfs-ng/ -I/usr/include/samba-4.0/ -D__STDC_CONSTANT_MACROS" \
+%endif
 LDFLAGS="-fPIC" \
-LIBS="-L%{_libdir}/mysql %{?_with_hdhomerun:-lhdhomerun} $LIBS" \
+%if 0%{?with_hdhomerun}
+LIBS=" -lhdhomerun $LIBS" \
+%endif
 ASFLAGS=-fPIC
 
 make %{?_smp_mflags} VERBOSE=1
@@ -331,6 +363,27 @@ fi
 #%%{_includedir}/xbmc/xbmcclient.h
 
 %changelog
+* Tue Mar 18 2014 Michael Cronenworth <mike@cchtml.com> - 13.0-0.7.Gotham_beta2
+- Switch away from bcond conditionals
+
+* Sun Mar 16 2014 Michael Cronenworth <mike@cchtml.com> - 13.0-0.6.Gotham_beta2
+- Update to Gotham beta 2
+- use external ffmpeg
+
+* Fri Mar 14 2014 Ken Dreyer <ktdreyer@ktdreyer.com> - 13.0-0.5.Gotham_beta1
+- Update to Gotham beta 1
+- Update Goom/MySQL patch, per RHBZ #1069079
+
+* Fri Feb 21 2014 Ken Dreyer <ktdreyer@ktdreyer.com> - 13.0-0.4.Gotham_alpha11
+- use internal ffmpeg
+- switch to bcond conditionals
+- remove hardcoded mysql directory in LIBS, since mysql_config will insert this
+  automatically.
+- rm BuildRoot
+
+* Mon Jan 27 2014 Ken Dreyer <ktdreyer@ktdreyer.com> - 13.0-0.3.Gotham_alpha11
+- Update to Gotham alpha 11
+
 * Mon Nov 25 2013 Ken Dreyer <ktdreyer@ktdreyer.com> - 13.0-0.3.Gotham_alpha9
 - Update to Gotham alpha 9
 
