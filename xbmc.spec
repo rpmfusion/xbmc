@@ -1,13 +1,13 @@
-%global PRERELEASE rc1
-#global DIRVERSION %{version}
+#global PRERELEASE rc1
+%global DIRVERSION %{version}
 #global GITCOMMIT Gotham_r2-ge988513
 # use the line below for pre-releases
-%global DIRVERSION %{version}%{PRERELEASE}
+#global DIRVERSION %{version}%{PRERELEASE}
 %global _hardened_build 1
 
 Name: xbmc
 Version: 13.1
-Release: 0.2.rc1%{?dist}
+Release: 1%{?dist}
 Summary: Media center
 
 License: GPLv2+ and GPLv3+
@@ -39,6 +39,10 @@ Patch4: xbmc-13.0-versioning.patch
 # Fix crash during suspend
 # https://github.com/xbmc/xbmc/pull/4696
 Patch5: xbmc-13.0-dbus-power.patch
+
+# Fix default cipher string
+# https://github.com/xbmc/xbmc/pull/4794
+Patch6: xbmc-13.1-curl.patch
 
 # External ffmpeg patches
 Patch100: 0001-Revert-drop-support-for-external-ffmpeg.patch
@@ -87,6 +91,7 @@ BuildRequires: ffmpeg-devel
 BuildRequires: flac-devel
 BuildRequires: flex
 BuildRequires: fontconfig-devel
+BuildRequires: fontpackages-devel
 BuildRequires: freetype-devel
 BuildRequires: fribidi-devel
 %if 0%{?el6}
@@ -149,7 +154,7 @@ BuildRequires: libva-devel
 BuildRequires: libvdpau-devel
 %endif
 BuildRequires: libvorbis-devel
-BuildRequires: libxml-devel
+BuildRequires: libxml2-devel
 BuildRequires: libxslt-devel
 BuildRequires: lzo-devel
 BuildRequires: mariadb-devel
@@ -177,6 +182,7 @@ BuildRequires: zlib-devel
 # nfs-utils-lib-devel package currently broken
 #BuildRequires: nfs-utils-lib-devel
 
+Requires: google-roboto-fonts
 # need explicit requires for these packages
 # as they are dynamically loaded via XBMC's arcane 
 # pseudo-DLL loading scheme (sigh)
@@ -245,6 +251,7 @@ library.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %patch100 -p1
 %patch101 -p1
@@ -340,6 +347,10 @@ ln -s %{python_sitearch}/PIL $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module
 #install -d $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib
 #ln -s %{python_sitearch}/pysqlite2 $RPM_BUILD_ROOT%{_libdir}/xbmc/addons/script.module.pysqlite/lib/pysqlite2
 
+# Use external Roboto font files instead of bundled ones
+ln -sf %{_fontbasedir}/google-roboto/Roboto-Regular.ttf ${RPM_BUILD_ROOT}%{_datadir}/xbmc/addons/skin.confluence/fonts/
+ln -sf %{_fontbasedir}/google-roboto/Roboto-Bold.ttf ${RPM_BUILD_ROOT}%{_datadir}/xbmc/addons/skin.confluence/fonts/
+
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -389,6 +400,13 @@ fi
 
 
 %changelog
+* Mon Jun 09 2014 Michael Cronenworth <mike@cchtml.com> - 13.1-1
+- Update to 13.1 final
+- Fix default cipher string for Fedora curl (RFBZ #3253)
+
+* Thu May 29 2014 Ken Dreyer <ktdreyer@ktdreyer.com> - 13.1-0.3.rc1
+- Unbundle Roboto fonts (RFBZ #3256). Thanks Mohamed El Morabity.
+
 * Mon May 26 2014 Michael Cronenworth <mike@cchtml.com> - 13.1-0.2.rc1
 - Update to 13.1 RC 1
 
