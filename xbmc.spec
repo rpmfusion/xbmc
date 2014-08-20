@@ -1,4 +1,4 @@
-#global PRERELEASE rc1
+#global PRERELEASE b3
 %global DIRVERSION %{version}
 #global GITCOMMIT Gotham_r2-ge988513
 # use the line below for pre-releases
@@ -6,7 +6,7 @@
 %global _hardened_build 1
 
 Name: xbmc
-Version: 13.1
+Version: 13.2
 Release: 1%{?dist}
 Summary: Media center
 
@@ -35,14 +35,6 @@ Patch3: xbmc-13.0-libmysqlclient.patch
 
 # Set program version parameters
 Patch4: xbmc-13.0-versioning.patch
-
-# Fix crash during suspend
-# https://github.com/xbmc/xbmc/pull/4696
-Patch5: xbmc-13.0-dbus-power.patch
-
-# Fix default cipher string
-# https://github.com/xbmc/xbmc/pull/4794
-Patch6: xbmc-13.1-curl.patch
 
 # External ffmpeg patches
 Patch100: 0001-Revert-drop-support-for-external-ffmpeg.patch
@@ -143,6 +135,7 @@ BuildRequires: libplist-devel
 BuildRequires: libpng-devel
 BuildRequires: librtmp-devel
 BuildRequires: libsamplerate-devel
+BuildRequires: libshairport-devel
 BuildRequires: libsmbclient-devel
 %if 0%{?_with_libssh}
 BuildRequires: libssh-devel
@@ -197,6 +190,7 @@ Requires: libcrystalhd
 %endif
 Requires: libmad
 Requires: librtmp
+Requires: libshairport
 
 # needed when doing a minimal install, see
 # https://bugzilla.rpmfusion.org/show_bug.cgi?id=1844
@@ -250,8 +244,6 @@ library.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 %patch100 -p1
 %patch101 -p1
@@ -400,6 +392,17 @@ fi
 
 
 %changelog
+* Wed Aug 20 2014 Michael Cronenworth <mike@cchtml.com> - 13.2-1
+- Update to 13.2 final
+- Enable AirTunes support
+
+* Wed Aug 06 2014 Michael Cronenworth <mike@cchtml.com> - 13.2-0.3.beta3
+- Update external ffmpeg patch
+
+* Tue Aug 05 2014 Michael Cronenworth <mike@cchtml.com> - 13.2-0.2.beta3
+- Update to 13.2 beta 3
+- Drop upstream patches
+
 * Mon Jun 09 2014 Michael Cronenworth <mike@cchtml.com> - 13.1-1
 - Update to 13.1 final
 - Fix default cipher string for Fedora curl (RFBZ #3253)
