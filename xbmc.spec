@@ -7,7 +7,7 @@
 
 Name: xbmc
 Version: 13.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Media center
 
 License: GPLv2+ and GPLv3+
@@ -392,6 +392,9 @@ fi
 
 
 %changelog
+* Fri Sep 26 2014 Nicolas Chauvet <kwizart@gmail.com> - 13.2-2
+- Rebuilt for FFmpeg 2.4.x
+
 * Wed Aug 20 2014 Michael Cronenworth <mike@cchtml.com> - 13.2-1
 - Update to 13.2 final
 - Enable AirTunes support
