@@ -7,7 +7,7 @@
 
 Name: xbmc
 Version: 13.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Media center
 
 License: GPLv2+ and GPLv3+
@@ -392,6 +392,9 @@ fi
 
 
 %changelog
+* Tue Nov 04 2014 Nicolas Chauvet <kwizart@gmail.com> - 13.2-4
+- Rebuilt for vaapi 0.36
+
 * Mon Oct 20 2014 Sérgio Basto <sergio@serjux.com> - 13.2-3
 - Rebuilt for FFmpeg 2.4.3
 
